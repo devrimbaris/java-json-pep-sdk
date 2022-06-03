@@ -16,9 +16,9 @@ import javax.ws.rs.client.*;
 public class AuthZClientExample {
 
     public static void main(String[] args) {
-        final String authorizationServiceUrl = "http://localhost:8080/authorize";
-        final String username = "enforcer";
-        final String password = "secret";
+        final String authorizationServiceUrl = "https://localhost:9443/api/identity/entitlement/decision/pdp";
+        final String username = "admin";
+        final String password = "admin";
 
         ClientConfiguration clientConfiguration = DefaultClientConfiguration.builder()
                 .authorizationServiceUrl(authorizationServiceUrl)
@@ -34,7 +34,11 @@ public class AuthZClientExample {
 
     private static Request buildXACMLRequest() {
         Category subject = new Category();
-        subject.addAttribute(new Attribute("username", "Alice"));
+        subject.addAttribute(new Attribute("http://wso2.org/identity/user/username",
+                                           "adminUser",
+                                           false,
+                                           "string"
+                                           ));
         subject.addAttribute(new Attribute("age", 15));
 
         Request request = new Request();
