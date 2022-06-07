@@ -1,7 +1,10 @@
 package io.xacml.pep.json.client.feign;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.xacml.json.model.*;
+import io.xacml.json.model.Attribute;
+import io.xacml.json.model.Category;
+import io.xacml.json.model.Request;
+import io.xacml.json.model.Response;
+import io.xacml.json.model.Result;
 import io.xacml.pep.json.client.AuthZClient;
 import io.xacml.pep.json.client.ClientConfiguration;
 import io.xacml.pep.json.client.DefaultClientConfiguration;
