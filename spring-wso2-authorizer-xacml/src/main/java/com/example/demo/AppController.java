@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppController {
 
     @GetMapping("/")
-    @PreAuthorize("hasPermission(#foo, 'write')")
+    @PreAuthorize("hasPermission(#model, 'read')")
     public String getProfile(Model model, Authentication authentication) {
 //        final String authorizationServiceUrl = "https://localhost:9443/api/identity/entitlement/decision/pdp";
 //        final String username = "admin";

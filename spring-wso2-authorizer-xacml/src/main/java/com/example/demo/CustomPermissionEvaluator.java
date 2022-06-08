@@ -37,7 +37,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     Request request = buildXACMLRequest();
 
     callPDPWithFeignClient(clientConfiguration, request);
-    return false;
+    return true;
   }
   private static Request buildXACMLRequest() {
     //build subject
