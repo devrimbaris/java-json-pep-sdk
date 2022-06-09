@@ -65,12 +65,4 @@ public class SecurityConfig  {
 
     return oidcLogoutSuccessHandler;
   }
-
-  //   @Bean
-  //    static MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
-  //        DefaultMethodSecurityExpressionHandler expressionHandler =
-  //            new DefaultMethodSecurityExpressionHandler();
-  //        expressionHandler.setPermissionEvaluator(new CustomPermissionEvaluator());
-  //        return expressionHandler;
-  //    }
 }
