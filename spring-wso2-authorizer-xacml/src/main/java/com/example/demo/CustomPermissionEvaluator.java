@@ -11,19 +11,40 @@ import io.xacml.pep.json.client.AuthZClient;
 import io.xacml.pep.json.client.ClientConfiguration;
 import io.xacml.pep.json.client.DefaultClientConfiguration;
 import io.xacml.pep.json.client.feign.FeignAuthZClient;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
+   static final String packageName = "com.example.demo.employee";
+
+
   @Override
   public boolean hasPermission(final Authentication authentication, final Serializable targetId, final String targetType, final Object permission) {
+    try {
+      var clazz = ClassLoader.getSystemClassLoader().loadClass(packageName + "." + targetType);
+      String strPermission = (String)permission;
+      Request request = buildXACMLRequest(clazz,authentication.getName(), strPermission);
+      var clientConfiguration = buildClientConfiguration();
+      callPDPWithFeignClient(clientConfiguration,request);
+    } catch (ClassNotFoundException cls){
+      cls.printStackTrace();
+      return false;
+    }
     return true;
   }
 
-
   @Override
   public boolean hasPermission(final Authentication authentication, final Object targetDomainObject, final Object permission) {
+
+    Request request = buildXACMLRequest();
+    var clientConfiguration = buildClientConfiguration();
+
+    callPDPWithFeignClient(clientConfiguration, request);
+    return true;
+  }
+  private ClientConfiguration buildClientConfiguration(){
     final String authorizationServiceUrl = "https://localhost:9443/api/identity/entitlement/decision/pdp";
     final String username = "admin";
     final String password = "admin";
@@ -34,11 +55,35 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
                                                                         .password(password)
                                                                         .build();
 
-    Request request = buildXACMLRequest();
-
-    callPDPWithFeignClient(clientConfiguration, request);
-    return true;
+    return clientConfiguration;
   }
+
+
+  private static Request buildXACMLRequest(Class resourceClass, String userName, String permission){
+    //build subject
+    Category subject = new Category();
+    subject.addAttribute(new Attribute("http://wso2.org/identity/user/username",
+                                       userName,
+                                       false,
+                                       "string"
+    ));
+
+    //build action
+    Category action = new Category();
+    action.addAttribute("urn:oasis:names:tc:xacml:1.0:action:action-id", permission);
+
+    //build resource
+    Category resource = new Category();
+    resource.addAttribute("urn:oasis:names:tc:xacml:1.0:resource:resource-id", resourceClass.getName());
+
+    //build request from subject, action and resource
+    Request request = new Request();
+    request.addAccessSubjectCategory(subject);
+    request.addActionCategory(action);
+    request.addResourceCategory(resource);
+    return request;
+  }
+
   private static Request buildXACMLRequest() {
     //build subject
     Category subject = new Category();
