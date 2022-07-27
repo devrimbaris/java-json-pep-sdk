@@ -29,7 +29,7 @@ public class AuthZClientExample {
         Request request = buildXACMLRequest();
 
         callPDPWithJaxRsClient(clientConfiguration, request);
-        callPDPWithJaxRsClientStepByStep(clientConfiguration, request);
+//        callPDPWithJaxRsClientStepByStep(clientConfiguration, request);
     }
 
     private static Request buildXACMLRequest() {
@@ -39,10 +39,16 @@ public class AuthZClientExample {
                                            false,
                                            "string"
                                            ));
-        subject.addAttribute(new Attribute("age", 15));
+
+        subject.addAttribute(new Attribute("age", 13, false, "integer"));
+
+        Category action = new Category();
+        action.addAttribute(new Attribute("urn:oasis:names:tc:xacml:1.0:action:action-id", "readAll", false,"string"));
+
 
         Request request = new Request();
         request.addAccessSubjectCategory(subject);
+        request.addActionCategory(action);
         return request;
     }
 
@@ -66,7 +72,7 @@ public class AuthZClientExample {
         WebTarget webTarget = client.target(configuration.getAuthorizationServiceUrl());
         Invocation.Builder builder = webTarget.request(PDPConstants.CONTENT_TYPE);
 
-        Response xacmlResponse = builder.post(Entity.entity(request, "application/xacml+json"), Response.class);
+        Response xacmlResponse = builder.post(Entity.entity(request, "application/json"), Response.class);
         for (Result r : xacmlResponse.getResults()) {
             System.out.println("Decision: " + r.getDecision());
         }
