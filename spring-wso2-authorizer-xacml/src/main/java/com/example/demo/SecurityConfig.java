@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
@@ -23,18 +24,34 @@ public class SecurityConfig  {
     handler.setPermissionEvaluator(evaluator);
     return handler;
   }
-  protected void configure(HttpSecurity http) throws Exception {
 
-    http.authorizeRequests()
+//  protected void configure(HttpSecurity http) throws Exception {
+//
+//    http.authorizeRequests()
+//
+//        // allow anonymous access to the root page
+//        .antMatchers("/").permitAll()
+//        // all other requests
+//        .anyRequest().authenticated()
+//        // 	Replace with logoutSuccessHandler(oidcLogoutSuccessHandler()) to support OIDC RP-initiated logout
+//        .and().logout().logoutSuccessHandler(oidcLogoutSuccessHandler())
+//        // enable OAuth2/OIDC
+//        .and().oauth2Login();
+//
+//  }
 
-        // allow anonymous access to the root page
-        .antMatchers("/").permitAll()
-        // all other requests
-        .anyRequest().authenticated()
-        // 	Replace with logoutSuccessHandler(oidcLogoutSuccessHandler()) to support OIDC RP-initiated logout
-        .and().logout().logoutSuccessHandler(oidcLogoutSuccessHandler())
-        // enable OAuth2/OIDC
-        .and().oauth2Login();
+
+  @Bean
+  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+
+    http.authorizeHttpRequests((auth) -> {
+      try {
+        auth.anyRequest().authenticated().and().oauth2Login();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      };
+    });
+    return http.build();
 
   }
 
