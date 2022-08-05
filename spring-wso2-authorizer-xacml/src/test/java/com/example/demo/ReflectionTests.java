@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.example.demo.core.XACMLAttribute;
+import com.example.demo.core.XACMLField;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -28,12 +28,12 @@ class ReflectionTests {
 
 		final List<Field> props = new LinkedList<>();
 		final Class<ReflectionDummyClass> clazz = ReflectionDummyClass.class;
-		ReflectionUtils.doWithFields(clazz , props::add, field -> AnnotationUtils.getAnnotation(field, XACMLAttribute.class) != null);
+		ReflectionUtils.doWithFields(clazz , props::add, field -> AnnotationUtils.getAnnotation(field, XACMLField.class) != null);
 		final Map<String, Object> mapOfXacmlAttributeValues = new HashMap<>();
 
 		for (Field f:props){
-			final XACMLAttribute annotation = AnnotationUtils.getAnnotation(f, XACMLAttribute.class);
-			String       urn        = annotation.urn();
+			final XACMLField annotation = AnnotationUtils.getAnnotation(f, XACMLField.class);
+			String           urn        = annotation.urn();
 			final String methodName = "get" + StringUtils.capitalize(f.getName());
 			final Method method     = ReflectionUtils.findMethod(clazz, methodName);
 			if (method != null){

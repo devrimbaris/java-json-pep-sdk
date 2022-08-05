@@ -3,13 +3,13 @@ package com.example.demo.service;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.example.demo.core.XACMLAttribute;
+import com.example.demo.core.XACMLField;
 import com.example.demo.impl.XACMLQueryService;
 import io.xacml.json.model.Attribute;
 import io.xacml.json.model.Category;
@@ -43,14 +43,14 @@ public abstract class SecurityService<T> implements ResultFilterer {
   @Override
   public boolean filterResult(final Object filterObject, final Authentication authentication) {
 
-    final Map<String, Object> xacmlAttributesOfObject = getXacmlAttributesOfObject(filterObject);
+    final List<XACMLAttribute> listOfXacmlAttributes = getXacmlAttributesOfObject(filterObject);
     //loop over xacml attrributes and add them as resource type attributes
-    final Request request = buildXACMLRequest(getType().getCanonicalName(), authentication.getName(), "read", xacmlAttributesOfObject);
+    final Request request = buildXACMLRequest(getType().getCanonicalName(), authentication.getName(), "read", listOfXacmlAttributes);
     boolean       result  = getXACMLQueryService().checkPermission(request);
     return result;
   }
 
-  protected Request buildXACMLRequest(final String resourceTypeClass, final String userName, final String permission, final Map<String, Object> xacmlAttributesOfObject) {
+  protected Request buildXACMLRequest(final String resourceTypeClass, final String userName, final String permission, final  List<XACMLAttribute> xacmlAttributesOfObject) {
 
     //build subject
     Category subject = new Category();
@@ -64,11 +64,11 @@ public abstract class SecurityService<T> implements ResultFilterer {
     Category action = new Category();
     action.addAttribute("urn:oasis:names:tc:xacml:1.0:action:action-id", permission);
 
-    //build resource
+    //build resourceww
     Category resource = new Category();
     resource.addAttribute("urn:oasis:names:tc:xacml:1.0:resource:resource-id", resourceTypeClass);
-    for (Entry<String, Object> e : xacmlAttributesOfObject.entrySet()) {
-      resource.addAttribute(e.getKey(), e.getValue(), "http://www.w3.org/2001/XMLSchema#string");
+    for (XACMLAttribute xa : xacmlAttributesOfObject) {
+      resource.addAttribute(xa.getUrn(), xa.getValue(), xa.getDataType().typeUrn);
     }
 
     // build environment
@@ -87,23 +87,24 @@ public abstract class SecurityService<T> implements ResultFilterer {
     return request;
   }
 
-  private Map<String, Object> getXacmlAttributesOfObject(final Object filterObject) {
-    final Map<String, Object> mapOfXacmlAttributeValues = new HashMap<>();
-    final List<Field>         props                     = new LinkedList<>();
+  private List<XACMLAttribute> getXacmlAttributesOfObject(final Object filterObject) {
+    final List<XACMLAttribute> list = new LinkedList<>();
+    final List<Field>          props                     = new LinkedList<>();
     final Class<T>            clazz                     = getType();
-    ReflectionUtils.doWithFields(clazz, props::add, field -> AnnotationUtils.getAnnotation(field, XACMLAttribute.class) != null);
+    ReflectionUtils.doWithFields(clazz, props::add, field -> AnnotationUtils.getAnnotation(field, XACMLField.class) != null);
 
     for (Field f : props) {
-      final XACMLAttribute annotation = AnnotationUtils.getAnnotation(f, XACMLAttribute.class);
-      String               urn        = annotation.urn();
+      final XACMLField annotation = AnnotationUtils.getAnnotation(f, XACMLField.class);
+      String           urn        = annotation.urn();
       final String         methodName = "get" + StringUtils.capitalize(f.getName());
       final Method         method     = ReflectionUtils.findMethod(clazz, methodName);
       if (method != null) {
         Object val = ReflectionUtils.invokeMethod(method, filterObject);
-        mapOfXacmlAttributeValues.put(urn, val);
+        XACMLAttribute x = new XACMLAttribute(urn, annotation.dataType(), val);
+        list.add(x);
       } //TODO:handle else
     }
-    return mapOfXacmlAttributeValues;
+    return list;
   }
 
 }

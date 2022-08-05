@@ -5,20 +5,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
 
-import com.example.demo.core.XACMLAttribute;
+import com.example.demo.core.XACMLField;
 
 @Entity
 public class ReflectionDummyClass {
 
   @Id
   @GeneratedValue
-  @XACMLAttribute(urn = "id")
+  @XACMLField(urn = "id")
   private Long   id;
-  @XACMLAttribute(urn = "name")
+  @XACMLField(urn = "name")
   private String name;
-  @XACMLAttribute(urn = "role")
+  @XACMLField(urn = "role")
   private String role;
-  @XACMLAttribute(urn = "age")
+  @XACMLField(urn = "age")
   private int    age;
 
   private String    gender;

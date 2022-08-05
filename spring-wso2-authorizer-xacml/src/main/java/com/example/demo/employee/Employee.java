@@ -5,23 +5,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
 
-import com.example.demo.core.XACMLAttribute;
+import com.example.demo.core.XACMLField;
+import com.example.demo.core.XACMLDataType;
 
 @Entity
 public class Employee {
 
   @Id
   @GeneratedValue
-  @XACMLAttribute(urn = "id", dataType = "integer")
+  @XACMLField(urn = "id", dataType = XACMLDataType.INTEGER)
   private Long   id;
 
-  @XACMLAttribute(urn = "name")
+  @XACMLField(urn = "name")
   private String name;
 
-  @XACMLAttribute(urn = "role")
+  @XACMLField(urn = "role")
   private String role;
 
-  @XACMLAttribute(urn = "age", dataType = "integer")
+  @XACMLField(urn = "age", dataType = XACMLDataType.INTEGER)
   private int    age;
 
   private String    gender;
