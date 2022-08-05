@@ -11,7 +11,6 @@ import io.xacml.pep.json.client.AuthZClient;
 import io.xacml.pep.json.client.ClientConfiguration;
 import io.xacml.pep.json.client.DefaultClientConfiguration;
 import io.xacml.pep.json.client.feign.FeignAuthZClient;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 

@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 @EnableMethodSecurity
 public class SecurityConfig  {
 
-
   @Bean
   static MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
     DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();

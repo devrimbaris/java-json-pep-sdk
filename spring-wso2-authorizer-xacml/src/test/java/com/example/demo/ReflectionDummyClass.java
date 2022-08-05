@@ -1,4 +1,4 @@
-package com.example.demo.employee;
+package com.example.demo;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,28 +8,25 @@ import java.util.Objects;
 import com.example.demo.core.XACMLAttribute;
 
 @Entity
-public class Employee {
+public class ReflectionDummyClass {
 
   @Id
   @GeneratedValue
-  @XACMLAttribute(urn = "id", dataType = "integer")
+  @XACMLAttribute(urn = "id")
   private Long   id;
-
   @XACMLAttribute(urn = "name")
   private String name;
-
   @XACMLAttribute(urn = "role")
   private String role;
-
-  @XACMLAttribute(urn = "age", dataType = "integer")
+  @XACMLAttribute(urn = "age")
   private int    age;
 
   private String    gender;
 
-  Employee() {
+  ReflectionDummyClass() {
   }
 
-  public Employee(String name, String role, int age) {
+  public ReflectionDummyClass(String name, String role, int age) {
 
     this.name = name;
     this.role = role;
@@ -74,14 +71,14 @@ public class Employee {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Employee)) {
+    if (!(o instanceof ReflectionDummyClass)) {
       return false;
     }
-    Employee employee = (Employee) o;
-    return Objects.equals(this.id, employee.id)
-           && Objects.equals(this.name, employee.name)
-           && Objects.equals(this.age, employee.age)
-           && Objects.equals(this.role, employee.role);
+    ReflectionDummyClass dummy = (ReflectionDummyClass) o;
+    return Objects.equals(this.id, dummy.id)
+           && Objects.equals(this.name, dummy.name)
+           && Objects.equals(this.age, dummy.age)
+           && Objects.equals(this.role, dummy.role);
   }
 
   @Override
@@ -91,7 +88,7 @@ public class Employee {
 
   @Override
   public String toString() {
-    return "Employee{" + "id=" + this.id +
+    return "Dummy{" + "id=" + this.id +
            ", name='" + this.name + '\'' +
            ", role='" + this.role + '\'' +
            ", age='" + this.age + '\'' +
