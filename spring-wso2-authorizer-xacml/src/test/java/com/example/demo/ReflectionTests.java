@@ -3,9 +3,9 @@ package com.example.demo;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.example.demo.core.XACMLField;
 import org.junit.Assert;

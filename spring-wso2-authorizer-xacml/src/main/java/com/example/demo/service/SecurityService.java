@@ -5,8 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import com.example.demo.core.XACMLAttribute;
 import com.example.demo.core.XACMLField;

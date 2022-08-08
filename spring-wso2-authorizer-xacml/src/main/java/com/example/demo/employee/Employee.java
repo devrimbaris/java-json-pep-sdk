@@ -5,8 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
 
-import com.example.demo.core.XACMLField;
 import com.example.demo.core.XACMLDataType;
+import com.example.demo.core.XACMLField;
 
 @Entity
 public class Employee {

@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.service.AbstractAppController;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
